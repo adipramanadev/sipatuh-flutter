@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pelanggaran/drawer/drawer.dart';
 import 'package:pelanggaran/pelanggaran/Pelanggaran.dart';
-// import 'package:pelanggaran/prestasi/Listprestasi.dart';
 import 'package:pelanggaran/QRpage.dart/scan.dart';
 import 'package:pelanggaran/siswa/Siswa.dart';
-// import 'package:pelanggaran/nobox/test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:http/http.dart' as http;
@@ -21,9 +19,9 @@ class Dashboard extends StatefulWidget {
 }
 
 class DashboardData {
-  final String totalSiswa;
-  final String totalPelanggaran;
-  final String hariIni;
+  final int totalSiswa;
+  final int totalPelanggaran;
+  final int hariIni;
 
   DashboardData({
     required this.totalSiswa,
@@ -33,9 +31,9 @@ class DashboardData {
 
   factory DashboardData.fromJson(Map<String, dynamic> json) {
     return DashboardData(
-      totalSiswa: json['total_siswa'],
-      totalPelanggaran: json['total_pelanggaran'],
-      hariIni: json['hari_ini'],
+      totalSiswa: json['total_siswa'] ?? 0, // Default value if null
+      totalPelanggaran: json['total_pelanggaran'] ?? 0,
+      hariIni: json['hari_ini'] ?? 0,
     );
   }
 }
@@ -94,8 +92,8 @@ class perkategori {
   });
   factory perkategori.fromJson(Map<String, dynamic> json) {
     return perkategori(
-      jenis: json['jenis'],
-      total: json['total'],
+      jenis: json['jenis'] as String? ?? '', // Provide a default empty String
+      total: json['total'] as int? ?? 0,
     );
   }
 }
@@ -120,8 +118,6 @@ class perkelas {
 }
 
 class perhari {
-  // final int total;
-
   final String kelas;
 
   final int total;
@@ -154,6 +150,7 @@ class ProfileData {
 
 class _DashboardState extends State<Dashboard> {
   DashboardData? dashboardData;
+  perkategori? perKategori;
   String total_siswa = "";
   String total_pelanggaran = "";
   String hari_ini = "";
@@ -192,10 +189,10 @@ class _DashboardState extends State<Dashboard> {
     );
     fetchPelanggaran().then((data) {
       setState(() {
-        dashboardData = data; // Update the state with fetched data
-        total_siswa = data.totalSiswa; // Assuming you still need these
-        total_pelanggaran = data.totalPelanggaran;
-        hari_ini = data.hariIni;
+        dashboardData = data;
+        total_siswa = data.totalSiswa.toString();
+        total_pelanggaran = data.totalPelanggaran.toString();
+        hari_ini = data.hariIni.toString();
       });
     }).catchError((error) {
       // Handle error...
@@ -517,7 +514,7 @@ class _DashboardState extends State<Dashboard> {
                             children: [
                               Center(
                                 child: Text(
-                                  dashboardData?.totalSiswa ?? 'Loading',
+                                  total_siswa,
                                   textAlign: TextAlign.start,
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(

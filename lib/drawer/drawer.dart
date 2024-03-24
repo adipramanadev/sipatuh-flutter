@@ -3,19 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pelanggaran/AkunLogin.dart';
 import 'package:pelanggaran/AppTentang.dart';
-import 'package:pelanggaran/Guru/Guru.dart';
-import 'package:pelanggaran/jurusan/Jurusan.dart';
 import 'package:pelanggaran/kelas/kelas.dart';
 import 'package:pelanggaran/nobox/login.dart';
 import 'package:pelanggaran/pelanggaran/JenisPelanggaran.dart';
 import 'package:pelanggaran/pelanggaran/Pelanggaran.dart';
-import 'package:pelanggaran/prestasi/JenisPrestasi.dart';
-import 'package:pelanggaran/prestasi/Listprestasi.dart';
 import 'package:pelanggaran/setting.dart';
 import 'package:pelanggaran/siswa/Siswa.dart';
-import 'package:pelanggaran/wali/WaliMurid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:unicons/unicons.dart';
 
 class DashDrawer extends StatefulWidget {
   const DashDrawer({super.key});
@@ -26,15 +20,15 @@ class DashDrawer extends StatefulWidget {
 
 class _DashDrawerState extends State<DashDrawer> {
   void _logout() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.remove('tokenJwt'); //menghapus token dari preference/local storage
-      Get.to(
-        const AkunLogin(),
-      );
-    }
-  @override
-Widget build(BuildContext context) {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('tokenJwt'); //menghapus token dari preference/local storage
+    Get.to(
+      const AkunLogin(),
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
         width: double.infinity,
         child: Padding(
@@ -53,12 +47,12 @@ Widget build(BuildContext context) {
                 //   width: 138,
                 //   height: 63,
                 // ),
-                 Image.asset(
-                      'asset/newlogo (1).png',
-                      height: 80,
-                      width: 155,
-                      fit: BoxFit.fitWidth,
-                    ),
+                Image.asset(
+                  'asset/newlogo (1).png',
+                  height: 80,
+                  width: 155,
+                  fit: BoxFit.fitWidth,
+                ),
                 const Divider(
                   color: Color(0xFFC6C6C6),
                   thickness: 2,
@@ -70,7 +64,6 @@ Widget build(BuildContext context) {
                   ),
                   child: SizedBox(
                     width: double.infinity,
-                  
                   ),
                 ),
                 // GestureDetector(
@@ -250,14 +243,11 @@ Widget build(BuildContext context) {
                   ),
                   child: SizedBox(
                     width: double.infinity,
-                   
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB
-                  (0,0,0,0),
-                  child: 
-                  GestureDetector(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: GestureDetector(
                     onTap: () {
                       Get.to(JenisPelanggaran());
                     },
@@ -325,7 +315,7 @@ Widget build(BuildContext context) {
                     ),
                   ),
                 ),
-              
+
                 // const Divider(
                 //   color: Color(0xFFC6C6C6),
                 //   thickness: 2,
@@ -415,10 +405,9 @@ Widget build(BuildContext context) {
                 //   ),
                 // ),
 
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0,20,0,0),
-                    child: 
-                    GestureDetector(
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  child: GestureDetector(
                     onTap: () {
                       Get.to(AppTentang());
                     },
@@ -450,83 +439,82 @@ Widget build(BuildContext context) {
                         ],
                       ),
                     ),
-                                    ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(SettingA());
-                    },
-                    child: const SizedBox(
-                      height: 40,
-                      width: double.infinity,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.settings,
-                            color: Color.fromARGB(255, 74, 74, 74),
-                            size: 22,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(SettingA());
+                  },
+                  child: const SizedBox(
+                    height: 40,
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.settings,
+                          color: Color.fromARGB(255, 74, 74, 74),
+                          size: 22,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: 12,
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: 12,
-                            ),
-                            child: Text(
-                              'Setting',
-                              style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  color: Color.fromARGB(255, 74, 74, 74),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14),
-                            ),
+                          child: Text(
+                            'Setting',
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                color: Color.fromARGB(255, 74, 74, 74),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                                    ),
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(LoginScreen());
-                    },
-                    child: const SizedBox(
-                      height: 40,
-                      width: double.infinity,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.settings,
-                            color: Color.fromARGB(255, 74, 74, 74),
-                            size: 22,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(LoginScreen());
+                  },
+                  child: const SizedBox(
+                    height: 40,
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.settings,
+                          color: Color.fromARGB(255, 74, 74, 74),
+                          size: 22,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: 12,
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: 12,
-                            ),
-                            child: Text(
-                              'Setting kirim pesan',
-                              style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  color: Color.fromARGB(255, 74, 74, 74),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14),
-                            ),
+                          child: Text(
+                            'Setting kirim pesan',
+                            style: TextStyle(
+                                fontFamily: 'Poppins',
+                                color: Color.fromARGB(255, 74, 74, 74),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                                    ),
-            
-                  
-                  const Divider(
+                  ),
+                ),
+
+                const Divider(
                   color: Color(0xFFC6C6C6),
                   thickness: 2,
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0,25,0,0),
+                  padding: const EdgeInsets.fromLTRB(0, 25, 0, 0),
                   child: GestureDetector(
                     onTap: () {
                       showDialog(
