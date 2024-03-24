@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:pelanggaran/kelas/kelas.dart';
-import 'package:pelanggaran/pelanggaran/Pelanggaran.dart';
-import 'package:pelanggaran/prestasi/Listprestasi.dart';
+import 'package:pelanggaran/Dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -214,7 +212,7 @@ class _TambahPelanggaranState extends State<TambahPelanggaran> {
         ),
         leading: GestureDetector(
           onTap: () {
-            Get.back();
+            Get.to(Dashboard());
           },
           child: Icon(
             Icons.arrow_back,

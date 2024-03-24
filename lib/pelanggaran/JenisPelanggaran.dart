@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pelanggaran/dashbackup.dart';
+import 'package:pelanggaran/Dashboard.dart';
 import 'package:pelanggaran/pelanggaran/Pelanggaran.dart';
 import 'package:pelanggaran/pelanggaran/TambahJenis.dart';
 import 'package:pelanggaran/prestasi/Tambahjenisprestasi.dart';
@@ -252,7 +252,6 @@ class _JenisPelanggaranState extends State<JenisPelanggaran> {
       appBar: AppBar(
         elevation: 0,
         centerTitle: false,
-        automaticallyImplyLeading: false,
         backgroundColor: Color(0xff3a57e8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.zero,
