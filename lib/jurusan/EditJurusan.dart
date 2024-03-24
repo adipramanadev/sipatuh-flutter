@@ -5,8 +5,6 @@ import 'package:get/get.dart';
 import 'package:pelanggaran/jurusan/Jurusan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class EditJurusan extends StatefulWidget {
   final String id;
