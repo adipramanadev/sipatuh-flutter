@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:pelanggaran/Dashboard.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -212,7 +212,7 @@ class _TambahPelanggaranState extends State<TambahPelanggaran> {
         ),
         leading: GestureDetector(
           onTap: () {
-            Get.to(Dashboard());
+            Get.back();
           },
           child: Icon(
             Icons.arrow_back,

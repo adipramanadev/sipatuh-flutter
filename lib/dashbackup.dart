@@ -1,19 +1,11 @@
-///File download from FlutterViz- Drag and drop a tools. For more details visit https://flutterviz.io/
-
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:pelanggaran/kelas/kelas.dart';
 import 'package:pelanggaran/drawer/drawer.dart';
 import 'package:pelanggaran/pelanggaran/Pelanggaran.dart';
-// import 'package:pelanggaran/prestasi/Listprestasi.dart';
-
 import 'package:pelanggaran/QRpage.dart/scan.dart';
 import 'package:pelanggaran/siswa/Siswa.dart';
-// import 'package:pelanggaran/nobox/test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:http/http.dart' as http;
@@ -26,80 +18,118 @@ class Dashboard extends StatefulWidget {
   State<Dashboard> createState() => _DashboardState();
 }
 
-class data {
-  // final int total;
-  final String data1;
-  final String data2;
-  final String data3;
-  final String data4;
-  final String data5;
+class DashboardData {
+  final int totalSiswa;
+  final int totalPelanggaran;
+  final int hariIni;
 
-  data(
-      {required this.data1,
-      required this.data2,
-      required this.data3,
-      required this.data4,
-      required this.data5});
-  factory data.fromJson(Map<String, dynamic> json) {
-    return data(
-      // total: json['total_siswa'],
-      data1: json['data'],
-      data2: json['data'],
-      data3: json['data'],
-      data4: json['data'],
-      data5: json['total'],
-    );
-  }
-}
-
-class TahunData {
-  final int total;
-  final String tahun;
-
-  TahunData({required this.total, required this.tahun});
-
-  factory TahunData.fromJson(Map<String, dynamic> json) {
-    return TahunData(
-      total: json['total'],
-      tahun: json['nama'].toString(),
-    );
-  }
-}
-
-class PrestasiData {
-  final int total;
-  final String nama;
-  // final String kelas;
-
-  PrestasiData({
-    required this.total,
-    required this.nama,
-    // required this.kelas,
+  DashboardData({
+    required this.totalSiswa,
+    required this.totalPelanggaran,
+    required this.hariIni,
   });
 
-  factory PrestasiData.fromJson(Map<String, dynamic> json) {
-    return PrestasiData(
-      total: json['total'],
-      nama: json['nama'],
-      // kelas: json['kelas'],
+  factory DashboardData.fromJson(Map<String, dynamic> json) {
+    return DashboardData(
+      totalSiswa: json['total_siswa'] ?? 0, // Default value if null
+      totalPelanggaran: json['total_pelanggaran'] ?? 0,
+      hariIni: json['hari_ini'] ?? 0,
     );
   }
 }
 
-class Hariini {
+// class dataDash {
+//   // final int total;
+//   final String total_siswa;
+//   final String total_pelanggaran;
+//   final String hari_ini;
+//   final String nama;
+//   final String jenis;
+//   final String kelas;
+//   final String kelas2;
+//   final int total;
+//   final int total2;
+//   final int total3;
+
+//   dataDash({
+//     required this.total_siswa,
+//     required this.total_pelanggaran,
+//     required this.hari_ini,
+//     required this.nama,
+//     required this.jenis,
+//     required this.kelas,
+//     required this.kelas2,
+//     required this.total,
+//     required this.total2,
+//     required this.total3,
+//   });
+//   factory dataDash.fromJson(Map<String, dynamic> json) {
+//     return dataDash(
+//       total_siswa: json['total_siswa'],
+//       total_pelanggaran: json['total_pelanggaran'],
+//       hari_ini: json['hari_ini'],
+//       nama: json['nama'],
+//       jenis: json['jenis'],
+//       kelas: json['kelas'],
+//       kelas2: json['kelas2'],
+//       total: json['total'],
+//       total2: json['total2'],
+//       total3: json['total3'],
+//     );
+//   }
+// }
+
+class perkategori {
+  // final int total;
+
+  final String jenis;
+
   final int total;
 
+  perkategori({
+    required this.jenis,
+    required this.total,
+  });
+  factory perkategori.fromJson(Map<String, dynamic> json) {
+    return perkategori(
+      jenis: json['jenis'] as String? ?? '', // Provide a default empty String
+      total: json['total'] as int? ?? 0,
+    );
+  }
+}
+
+class perkelas {
+  // final int total;
+
+  final String nama;
+
+  final int total;
+
+  perkelas({
+    required this.nama,
+    required this.total,
+  });
+  factory perkelas.fromJson(Map<String, dynamic> json) {
+    return perkelas(
+      nama: json['nama'],
+      total: json['total'],
+    );
+  }
+}
+
+class perhari {
   final String kelas;
 
-  Hariini({
-    required this.total,
-    required this.kelas,
-  });
+  final int total;
 
-  factory Hariini.fromJson(Map<String, dynamic> json) {
-    return Hariini(
-      total: json['total'],
+  perhari({
+    required this.kelas,
+    required this.total,
+  });
+  factory perhari.fromJson(Map<String, dynamic> json) {
+    return perhari(
       kelas: json['kelas'],
+      total: json['total'],
     );
   }
 }
@@ -119,11 +149,16 @@ class ProfileData {
 }
 
 class _DashboardState extends State<Dashboard> {
-  String data1 = "";
-  String data2 = "";
-  String data3 = "";
-  String data4 = "";
-  String data5 = "";
+  DashboardData? dashboardData;
+  perkategori? perKategori;
+  String total_siswa = "";
+  String total_pelanggaran = "";
+  String hari_ini = "";
+  String nama = "";
+  String kelas = "";
+  int total1 = 0;
+  int total2 = 0;
+  int total3 = 0;
   String namaUser = 'Loading...';
   String emailUser = 'Loading...';
   late TooltipBehavior _tooltipBehaviorTahun;
@@ -134,20 +169,15 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     _tooltipBehaviorTahun = TooltipBehavior(enable: true);
     _tooltipBehaviorPrestasi = TooltipBehavior(enable: true);
-    fecthTahunKel();
-    fetchdata1();
-    fetchdata2();
-    fetchdata3();
-    fetchdata4();
-    fetchdata5();
-
+    fetchkategori();
+    fetchHarini();
+    fetchPelanggaran();
     fetchProfile(
       (List<ProfileData> profileDataList) {
         ProfileData profileData = profileDataList[0];
         if (mounted) {
           setState(() {
-            // ignore: unnecessary_cast
-            namaUser = profileData.nama as String;
+            namaUser = profileData.nama;
             emailUser = profileData.email;
           });
         }
@@ -157,6 +187,17 @@ class _DashboardState extends State<Dashboard> {
         print(error);
       },
     );
+    fetchPelanggaran().then((data) {
+      setState(() {
+        dashboardData = data;
+        total_siswa = data.totalSiswa.toString();
+        total_pelanggaran = data.totalPelanggaran.toString();
+        hari_ini = data.hariIni.toString();
+      });
+    }).catchError((error) {
+      // Handle error...
+      print("Failed to load dashboard data: $error");
+    });
   }
 
   void fetchProfile(void Function(List<ProfileData>) onSuccess,
@@ -172,27 +213,57 @@ class _DashboardState extends State<Dashboard> {
           'Cookie': token,
         },
       );
-      if (response.statusCode == 200) {
-        try {
-          final Map<String, dynamic> data = json.decode(response.body);
-          final profileData = ProfileData.fromJson(data);
-          onSuccess([profileData]);
-        } catch (e) {
-          onError('Gagal mendecode data: ${e.toString()}');
-        }
+      // Check if the response is JSON
+      var contentType = response.headers['content-type'];
+      if (response.statusCode == 200 &&
+          contentType != null &&
+          contentType.contains('application/json')) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        final profileData = ProfileData.fromJson(data);
+        onSuccess([profileData]);
+        isError = true;
       } else {
-        onError('Gagal mengambil data: ${response.statusCode}');
-        // isError = false;
+        // If response is not JSON, print the response for debugging
+        print('Response body: ${response.body}');
+        onError(
+            'Expected JSON response, got ${contentType}. Body: ${response.body}');
+        isError = false;
       }
     } catch (e) {
-      if (e
-          .toString()
-          .contains("Connection closed before full header was received")) {}
-      throw e;
+      print('Error fetching profile: $e');
+      onError('Exception caught: $e');
     }
   }
 
-  Future<List<Hariini>> fecthPrestasi() async {
+  Future<DashboardData> fetchPelanggaran() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('tokenJwt') ?? '';
+    isError = false;
+    try {
+      final response = await http.get(
+        Uri.parse('http://34.101.47.131/indexapi/dashboard'),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Cookie': token,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+        DashboardData dashboardData = DashboardData.fromJson(jsonData);
+        isError = true;
+        return dashboardData; // Return a single DashboardData instance
+      } else {
+        isError = false;
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      isError = false;
+      throw Exception('Failed to load data: $e');
+    }
+  }
+
+  Future<List<perhari>> fetchHarini() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('tokenJwt') ?? '';
     isError = false;
@@ -207,8 +278,8 @@ class _DashboardState extends State<Dashboard> {
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = json.decode(response.body);
-        final List<Hariini> genderData =
-            jsonData.map((jsonItem) => Hariini.fromJson(jsonItem)).toList();
+        final List<perhari> genderData =
+            jsonData.map((jsonItem) => perhari.fromJson(jsonItem)).toList();
         isError = true;
         return genderData;
       } else {
@@ -223,7 +294,7 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
-  Future<List<PrestasiData>> fetchPelanggaran() async {
+  Future<List<perkategori>> fetchkategori() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('tokenJwt') ?? '';
     isError = false;
@@ -237,12 +308,11 @@ class _DashboardState extends State<Dashboard> {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> jsonData = json.decode(response.body);
-        final List<PrestasiData> genderData = jsonData
-            .map((jsonItem) => PrestasiData.fromJson(jsonItem))
-            .toList();
+        final List<dynamic> data = json.decode(response.body);
+        final kategori =
+            data.map((item) => perkategori.fromJson(item)).toList();
         isError = true;
-        return genderData;
+        return kategori;
       } else {
         isError;
         throw Exception('Gagal mengambil data: ${response.statusCode}');
@@ -250,22 +320,12 @@ class _DashboardState extends State<Dashboard> {
     } catch (e) {
       if (e
           .toString()
-          .contains("Connection closed before full header was received")) {
-        //handle the specific error condition here
-        //you can add custom headling logic for this case
-        // Get.snackbar(
-        //   'Gagal meload data',
-        //   "Error:{$e} Connection closed before full header was received",
-        //   colorText: Colors.white,
-        //   backgroundColor: Colors.red,
-        //   icon: const Icon(Icons.add_alert),
-        // );
-      }
+          .contains("Connection closed before full header was received")) {}
       throw e;
     }
   }
 
-  Future<List<TahunData>> fecthTahunKel() async {
+  Future<List<perkelas>> fetchperkelas() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('tokenJwt') ?? '';
     isError = false;
@@ -280,224 +340,18 @@ class _DashboardState extends State<Dashboard> {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        final tahunData = data.map((item) => TahunData.fromJson(item)).toList();
+        final Perkelas = data.map((item) => perkelas.fromJson(item)).toList();
         isError = true;
-        return tahunData;
+        return Perkelas;
       } else {
-        isError = false;
+        isError;
         throw Exception('Gagal mengambil data: ${response.statusCode}');
       }
     } catch (e) {
       if (e
           .toString()
-          .contains("Connection closed before full header was received")) {
-        //handle the specific error condition here
-        //you can add custom headling logic for this case
-        // Get.snackbar(
-        //   'Gagal meload data',
-        //   "Error:{$e} Connection closed before full header was received",
-        //   colorText: Colors.white,
-        //   backgroundColor: Colors.red,
-        //   icon: const Icon(Icons.add_alert),
-        // );
-      }
+          .contains("Connection closed before full header was received")) {}
       throw e;
-    }
-  }
-
-  Future<void> fetchdata1() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('tokenJwt') ?? '';
-    isError = false;
-    try {
-      final response = await http.get(
-        Uri.parse(
-          'http://34.101.47.131/indexapi/countkelas/10',
-        ),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Cookie': token,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        print('API Response: $jsonData');
-        isError = true;
-        if (jsonData.containsKey('data')) {
-          setState(() {
-            data1 = jsonData['data'];
-          });
-        } else {
-          print('Error: Response does not contain data');
-          isError = false;
-        }
-      } else {
-        print('Error: ${response.statusCode}');
-        isError = false;
-        // showSnackBar('Error: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error fetching data: $e');
-      isError = false;
-      // showSnackBar('Error fetching data: $e');
-    }
-  }
-
-  Future<void> fetchdata2() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('tokenJwt') ?? '';
-    isError = true;
-    try {
-      final response = await http.get(
-        Uri.parse(
-          'http://34.101.47.131/indexapi/countkelas/11',
-        ),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Cookie': token,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        print('API Response: $jsonData');
-
-        if (jsonData.containsKey('data')) {
-          setState(() {
-            data2 = jsonData['data'];
-          });
-        } else {
-          print('Error: Response does not contain data');
-          isError = false;
-        }
-      } else {
-        print('Error: ${response.statusCode}');
-        isError = false;
-        // showSnackBar('Error: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error fetching data: $e');
-      isError = false;
-      // showSnackBar('Error fetching data: $e');
-    }
-  }
-
-  Future<void> fetchdata3() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('tokenJwt') ?? '';
-    isError = false;
-    try {
-      final response = await http.get(
-        Uri.parse(
-          'http://34.101.47.131/indexapi/countkelas/12',
-        ),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Cookie': token,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        print('API Response: $jsonData');
-        isError = true;
-        if (jsonData.containsKey('data')) {
-          setState(() {
-            data3 = jsonData['data'];
-          });
-        } else {
-          print('Error: Response does not contain data');
-          isError = false;
-        }
-      } else {
-        print('Error: ${response.statusCode}');
-        isError = false;
-        // showSnackBar('Error: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error fetching data: $e');
-      isError = false;
-      // showSnackBar('Error fetching data: $e');
-    }
-  }
-
-  Future<void> fetchdata4() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('tokenJwt') ?? '';
-    isError = false;
-    try {
-      final response = await http.get(
-        Uri.parse(
-          'http://34.101.47.131/indexapi/countpelanggaran',
-        ),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Cookie': token,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        print('API Response: $jsonData');
-        isError = true;
-        if (jsonData.containsKey('data')) {
-          setState(() {
-            data4 = jsonData['data'];
-          });
-        } else {
-          print('Error: Response does not contain data');
-          isError = false;
-        }
-      } else {
-        print('Error: ${response.statusCode}');
-        isError = false;
-        // showSnackBar('Error: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error fetching data: $e');
-      isError = false;
-      // showSnackBar('Error fetching data: $e');
-    }
-  }
-
-  Future<void> fetchdata5() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('tokenJwt') ?? '';
-    isError = false;
-
-    try {
-      final response = await http.get(
-        Uri.parse(
-          'http://34.101.47.131/indexapi/countpelanggaranbyday',
-        ),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Cookie': token,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        print('API Response: $jsonData');
-        isError = true;
-        if (jsonData.containsKey('total')) {
-          setState(() {
-            data5 = jsonData['total'];
-          });
-        } else {
-          print('Error: Response does not contain data');
-          isError = false;
-        }
-      } else {
-        print('Error: ${response.statusCode}');
-        isError = false;
-        // showSnackBar('Error: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error fetching data: $e');
-      isError = false;
-      // showSnackBar('Error fetching data: $e');
     }
   }
 
@@ -609,14 +463,10 @@ class _DashboardState extends State<Dashboard> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          fecthTahunKel();
-          fetchdata1();
-          fetchdata2();
-          fetchdata3();
-          fetchdata4();
-          fetchdata5();
           fetchPelanggaran();
-          fecthPrestasi();
+          fetchHarini();
+          fetchkategori();
+          fetchperkelas();
           await Future.delayed(Duration(milliseconds: 4000));
         },
         child: Column(
@@ -662,15 +512,17 @@ class _DashboardState extends State<Dashboard> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              Text(
-                                data1,
-                                textAlign: TextAlign.start,
-                                overflow: TextOverflow.clip,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 30,
-                                  color: Color(0xffa6def1),
+                              Center(
+                                child: Text(
+                                  total_siswa,
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.clip,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 30,
+                                    color: Color(0xffa6def1),
+                                  ),
                                 ),
                               ),
                               Text(
@@ -705,7 +557,7 @@ class _DashboardState extends State<Dashboard> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Text(
-                                data4,
+                                total_pelanggaran,
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
@@ -747,7 +599,7 @@ class _DashboardState extends State<Dashboard> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Text(
-                                data5,
+                                hari_ini,
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
@@ -826,62 +678,57 @@ class _DashboardState extends State<Dashboard> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                   ),
-                                  child: Expanded(
-                                    child: FutureBuilder<List<PrestasiData>>(
-                                        future: fetchPelanggaran(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return const Center(
-                                              child: CircularProgressIndicator(
-                                                color: Colors.white,
-                                              ),
-                                            );
-                                          } else if (snapshot.hasError) {
-                                            return Center(
-                                              child: Text(
-                                                  'Error: ${snapshot.error}'),
-                                            );
-                                          } else {
-                                            List<PrestasiData> jenkel =
-                                                snapshot.data!;
 
-                                            return SfCircularChart(
-                                              palette: const <Color>[
-                                                Color.fromARGB(
-                                                    255, 209, 58, 12),
-                                                Color.fromARGB(
-                                                    255, 230, 255, 43),
-                                                Color.fromARGB(
-                                                    255, 255, 89, 43),
-                                                Color.fromARGB(255, 242, 1, 97),
-                                                Color.fromARGB(255, 5, 253, 96),
-                                                Color.fromARGB(
-                                                    255, 43, 255, 241),
-                                              ],
-                                              tooltipBehavior:
-                                                  _tooltipBehaviorPrestasi,
-                                              series: <CircularSeries>[
-                                                PieSeries<PrestasiData, String>(
-                                                  dataSource: jenkel,
-                                                  xValueMapper:
-                                                      (PrestasiData data, _) =>
-                                                          data.nama,
-                                                  yValueMapper:
-                                                      (PrestasiData data, _) =>
-                                                          data.total,
-                                                  dataLabelSettings:
-                                                      const DataLabelSettings(
-                                                          isVisible: true),
-                                                  enableTooltip: true,
-                                                  sortingOrder:
-                                                      SortingOrder.descending,
-                                                )
-                                              ],
-                                            );
-                                          }
-                                        }),
-                                  ),
+                                  child: FutureBuilder<List<perkategori>>(
+                                      future: fetchkategori(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const Center(
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                            ),
+                                          );
+                                        } else if (snapshot.hasError) {
+                                          return Center(
+                                            child: Text(
+                                                'Error: ${snapshot.error}'),
+                                          );
+                                        } else {
+                                          List<perkategori> kategori =
+                                              snapshot.data!;
+
+                                          return SfCircularChart(
+                                            palette: const <Color>[
+                                              Color.fromARGB(255, 209, 58, 12),
+                                              Color.fromARGB(255, 230, 255, 43),
+                                              Color.fromARGB(255, 255, 89, 43),
+                                              Color.fromARGB(255, 242, 1, 97),
+                                              Color.fromARGB(255, 5, 253, 96),
+                                              Color.fromARGB(255, 43, 255, 241),
+                                            ],
+                                            tooltipBehavior:
+                                                _tooltipBehaviorPrestasi,
+                                            series: <CircularSeries>[
+                                              PieSeries<perkategori, String>(
+                                                dataSource: kategori,
+                                                xValueMapper:
+                                                    (perkategori data, _) =>
+                                                        data.jenis,
+                                                yValueMapper:
+                                                    (perkategori data, _) =>
+                                                        data.total,
+                                                dataLabelSettings:
+                                                    const DataLabelSettings(
+                                                        isVisible: true),
+                                                enableTooltip: true,
+                                                sortingOrder:
+                                                    SortingOrder.descending,
+                                              )
+                                            ],
+                                          );
+                                        }
+                                      }),
                                 ),
                               ],
                             ),
@@ -923,16 +770,12 @@ class _DashboardState extends State<Dashboard> {
                                 Container(
                                   height: 120,
                                   width: 140,
-                                  // clipBehavior: Clip.antiAlias,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: FutureBuilder<List<Hariini>>(
-                                    future: fecthPrestasi(),
+                                  child: FutureBuilder<List<perhari>>(
+                                    future: fetchHarini(),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState ==
                                           ConnectionState.waiting) {
-                                        return const Center(
+                                        return Center(
                                           child: CircularProgressIndicator(
                                             color: Colors.white,
                                           ),
@@ -943,39 +786,51 @@ class _DashboardState extends State<Dashboard> {
                                               Text('Error: ${snapshot.error}'),
                                         );
                                       } else {
-                                        List<Hariini> jenkel = snapshot.data!;
-                                        return SfCircularChart(
-                                          palette: const <Color>[
-                                            Colors.amber,
-                                            Color.fromARGB(255, 44, 150, 20),
-                                            Color.fromARGB(255, 16, 229, 252),
-                                            Color.fromARGB(255, 252, 16, 252),
-                                            Color.fromARGB(255, 48, 246, 4),
-                                            Color.fromARGB(255, 255, 255, 255),
-                                          ],
-                                          tooltipBehavior:
-                                              _tooltipBehaviorPrestasi,
-                                          series: <CircularSeries>[
-                                            DoughnutSeries<Hariini, String>(
-                                              dataSource: jenkel,
-                                              xValueMapper: (Hariini data, _) =>
-                                                  data.kelas,
-                                              yValueMapper: (Hariini data, _) =>
-                                                  data.total,
-                                              dataLabelSettings:
-                                                  const DataLabelSettings(
-                                                isVisible: true,
-                                              ),
-                                              enableTooltip: true,
-                                              sortingOrder:
-                                                  SortingOrder.descending,
-                                            )
-                                          ],
-                                        );
+                                        List<perhari>? pelanggaranPerHari =
+                                            snapshot.data;
+                                        if (pelanggaranPerHari == null ||
+                                            pelanggaranPerHari.isEmpty) {
+                                          // Tampilkan konten jika tidak ada data
+                                          return Center(
+                                            child: Text('0'),
+                                          );
+                                        } else {
+                                          return SfCircularChart(
+                                            palette: const <Color>[
+                                              Colors.amber,
+                                              Color.fromARGB(255, 44, 150, 20),
+                                              Color.fromARGB(255, 16, 229, 252),
+                                              Color.fromARGB(255, 252, 16, 252),
+                                              Color.fromARGB(255, 48, 246, 4),
+                                              Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                            ],
+                                            tooltipBehavior:
+                                                _tooltipBehaviorPrestasi,
+                                            series: <CircularSeries>[
+                                              DoughnutSeries<perhari, String>(
+                                                dataSource: pelanggaranPerHari,
+                                                xValueMapper:
+                                                    (perhari data, _) =>
+                                                        data.kelas,
+                                                yValueMapper:
+                                                    (perhari data, _) =>
+                                                        data.total,
+                                                dataLabelSettings:
+                                                    const DataLabelSettings(
+                                                  isVisible: true,
+                                                ),
+                                                enableTooltip: true,
+                                                sortingOrder:
+                                                    SortingOrder.descending,
+                                              )
+                                            ],
+                                          );
+                                        }
                                       }
                                     },
                                   ),
-                                ),
+                                )
                               ],
                             ),
                           ),
@@ -1030,7 +885,7 @@ class _DashboardState extends State<Dashboard> {
                                 height: 170,
                                 width: 280,
                                 child: FutureBuilder(
-                                  future: fecthTahunKel(),
+                                  future: fetchperkelas(),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
@@ -1044,7 +899,7 @@ class _DashboardState extends State<Dashboard> {
                                         child: Text('Error: ${snapshot.error}'),
                                       );
                                     } else {
-                                      List<TahunData> tahun = snapshot.data!;
+                                      List<perkelas> Perkelas = snapshot.data!;
                                       return SfCartesianChart(
                                         primaryXAxis: const CategoryAxis(
                                           labelStyle: TextStyle(
@@ -1066,13 +921,13 @@ class _DashboardState extends State<Dashboard> {
                                         // ),
                                         tooltipBehavior: _tooltipBehaviorTahun,
                                         series: <CartesianSeries>[
-                                          ColumnSeries<TahunData, String>(
+                                          ColumnSeries<perkelas, String>(
                                             // name: "Kelas",
-                                            dataSource: tahun,
+                                            dataSource: Perkelas,
                                             color: Colors.amber,
-                                            xValueMapper: (TahunData data, _) =>
-                                                data.tahun,
-                                            yValueMapper: (TahunData data, _) =>
+                                            xValueMapper: (perkelas data, _) =>
+                                                data.nama,
+                                            yValueMapper: (perkelas data, _) =>
                                                 data.total,
                                             dataLabelSettings:
                                                 const DataLabelSettings(
@@ -1112,40 +967,23 @@ class _DashboardState extends State<Dashboard> {
         shape: CircularNotchedRectangle(),
         color: Color(0xFF3A57E8),
         child: Container(
-          height: 55.0,
+          height: 30.0,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              // IconButton(
-              //   icon: Icon(
-              //     Icons.home_outlined,
-              //     color: Colors.white,
-              //     size: 28,
-              //   ),
-              //   onPressed: () => Get.to(Dashboard()),
-              // ),
               IconButton(
                 icon: Icon(
-                  Icons.info_outline,
+                  Icons.info_sharp,
                   color: Colors.white,
-                  size: 35,
+                  size: 32,
                 ),
                 onPressed: () => Get.to(Pelanggaran()),
               ),
-              // SizedBox(width: 48.0),
-              // IconButton(
-              //   icon: Icon(
-              //     UniconsLine.trophy,
-              //     color: Colors.white,
-              //     size: 35,
-              //   ),
-              //   onPressed: () => Get.to(Prestasi()),
-              // ),
               IconButton(
                 icon: Icon(
                   Icons.groups_outlined,
                   color: Colors.white,
-                  size: 35,
+                  size: 32,
                 ),
                 onPressed: () => Get.to(Siswa()),
               ),
