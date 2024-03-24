@@ -22,7 +22,7 @@ class _DashDrawerState extends State<DashDrawer> {
   void _logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('tokenJwt'); //menghapus token dari preference/local storage
-    Get.to(
+    Get.offAll(
       const AkunLogin(),
     );
   }
