@@ -141,7 +141,7 @@ class _PelanggaranState extends State<Pelanggaran> {
 
   String buildPrintData(int index) {
     // String qrData
-    qrWidget();
+    // qrWidget();
     String printData = """
     
 NIS: ${searchData[index].nis}
