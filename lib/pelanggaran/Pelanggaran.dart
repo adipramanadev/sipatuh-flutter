@@ -141,10 +141,11 @@ class _PelanggaranState extends State<Pelanggaran> {
 
   String buildPrintData(int index) {
     // String qrData
-
+    // qrWidget();
     String printData = """
     
 NIS: ${searchData[index].nis}
+
 Nama: ${searchData[index].nama}
 Kelas: ${searchData[index].kelas}
 Pelanggaran: ${searchData[index].jenis}
@@ -580,15 +581,6 @@ Catatan: ${searchData[index].detail}
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
-              if (showQRCode)
-                RepaintBoundary(
-                  key: qrKey,
-                  child: Container(
-                    width: 0, // Set width to 0 to make it invisible
-                    height: 0, // Set height to 0 to make it invisible
-                    child: qrWidget(),
-                  ),
-                ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
                 child: TextField(

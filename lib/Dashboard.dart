@@ -111,8 +111,8 @@ class perkelas {
   });
   factory perkelas.fromJson(Map<String, dynamic> json) {
     return perkelas(
-      nama: json['nama'],
-      total: json['total'],
+      nama: json['nama'] as String? ?? '',
+      total: json['total'] as int? ?? 0,
     );
   }
 }
@@ -128,8 +128,8 @@ class perhari {
   });
   factory perhari.fromJson(Map<String, dynamic> json) {
     return perhari(
-      kelas: json['kelas'],
-      total: json['total'],
+      kelas: json['kelas'] as String? ?? '',
+      total: json['total'] as int? ?? 0,
     );
   }
 }
