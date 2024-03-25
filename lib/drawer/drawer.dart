@@ -42,16 +42,11 @@ class _DashDrawerState extends State<DashDrawer> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Image.asset(
-                //   'assets/images/lo.jpg',
-                //   width: 138,
-                //   height: 63,
-                // ),
                 Image.asset(
                   'asset/newlogo (1).png',
                   height: 80,
                   width: 155,
-                  fit: BoxFit.fitWidth,
+                fit: BoxFit.fitWidth,
                 ),
                 const Divider(
                   color: Color(0xFFC6C6C6),

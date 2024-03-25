@@ -4,9 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pelanggaran/Dashboard.dart';
-import 'package:pelanggaran/pelanggaran/Pelanggaran.dart';
-import 'package:pelanggaran/pelanggaran/TambahJenis.dart';
-import 'package:pelanggaran/prestasi/Tambahjenisprestasi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 

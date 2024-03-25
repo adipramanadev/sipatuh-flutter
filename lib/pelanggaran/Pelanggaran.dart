@@ -1,14 +1,13 @@
-///File download from FlutterViz- Drag and drop a tools. For more details visit https://flutterviz.io/
-
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'dart:convert';
+import 'dart:ui' as ui;
+import 'dart:ui';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:flutter/services.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:pelanggaran/Dashboard.dart';
-import 'package:pelanggaran/pelanggaran/Editpelanggaran.dart';
-import 'package:pelanggaran/pelanggaran/TambahPelanggaran.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -55,6 +54,7 @@ class SiswaData {
 }
 
 class _PelanggaranState extends State<Pelanggaran> {
+  GlobalKey qrKey = GlobalKey();
   final TextEditingController searchController = TextEditingController();
   List<SiswaData> searchData = [];
   bool isConnected = false;
@@ -64,6 +64,26 @@ class _PelanggaranState extends State<Pelanggaran> {
   List<BluetoothDevice> devices = [];
   BluetoothDevice? selectedDevices;
   BlueThermalPrinter printer = BlueThermalPrinter.instance;
+  Future<ui.Image> _captureAsImage(GlobalKey key) async {
+    RenderRepaintBoundary boundary =
+        key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+    return image;
+  }
+
+// Converts a ui.Image to a ByteData
+  Future<ByteData?> _convertImagetoByteData(ui.Image image) async {
+    ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    return byteData;
+  }
+
+  bool showQRCode = false;
+
+  void toggleShowQRCode() {
+    setState(() {
+      showQRCode = !showQRCode;
+    });
+  }
 
   void connectToDevice() async {
     if (selectedDevices != null) {
@@ -81,6 +101,19 @@ class _PelanggaranState extends State<Pelanggaran> {
   }
 
   void _printData(int index) async {
+    GlobalKey qrKey = GlobalKey();
+    toggleShowQRCode(); // Show the QR code for rendering
+
+    await Future.delayed(Duration(milliseconds: 100));
+    // Generate QR Code Widget
+
+    // Convert QR Code Widget to ui.Image
+    ui.Image qrImage = await _captureAsImage(qrKey);
+
+    // Convert ui.Image to ByteData for printing
+    ByteData? byteData = await _convertImagetoByteData(qrImage);
+    Uint8List buffer = byteData!.buffer.asUint8List();
+
     try {
       BlueThermalPrinter bluetoothPrinter = BlueThermalPrinter.instance;
       List<BluetoothDevice> devices = await bluetoothPrinter.getBondedDevices();
@@ -95,6 +128,7 @@ class _PelanggaranState extends State<Pelanggaran> {
         }
 
         String printData = buildPrintData(index);
+        String qrData = "SiPATUH SMKN";
         await bluetoothPrinter.write(printData);
         await bluetoothPrinter.disconnect();
       } else {
@@ -106,8 +140,10 @@ class _PelanggaranState extends State<Pelanggaran> {
   }
 
   String buildPrintData(int index) {
+    // String qrData
+
     String printData = """
-    SIPATUH - PELANGGARAN SISWA
+    
 NIS: ${searchData[index].nis}
 Nama: ${searchData[index].nama}
 Kelas: ${searchData[index].kelas}
@@ -499,19 +535,6 @@ Catatan: ${searchData[index].detail}
               ),
             ),
           ),
-          //  SizedBox(width: 10),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     getDevices();
-          //   },
-          //   style: ElevatedButton.styleFrom(
-          //     primary: Color(0xff3f5198),
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(8.0),
-          //     ),
-          //   ),
-          //   child: const Icon(Icons.refresh, color: Colors.white),
-          // ),
         ),
       ],
     );
@@ -557,6 +580,15 @@ Catatan: ${searchData[index].detail}
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: [
+              if (showQRCode)
+                RepaintBoundary(
+                  key: qrKey,
+                  child: Container(
+                    width: 0, // Set width to 0 to make it invisible
+                    height: 0, // Set height to 0 to make it invisible
+                    child: qrWidget(),
+                  ),
+                ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
                 child: TextField(
@@ -612,8 +644,16 @@ Catatan: ${searchData[index].detail}
           ),
         ),
       ),
+    );
+  }
 
-      // ),
+  Widget qrWidget() {
+    return Container(
+      child: QrImageView(
+        data: "Your QR Code Data",
+        version: QrVersions.auto,
+        size: 200.0,
+      ),
     );
   }
 }
