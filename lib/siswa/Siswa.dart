@@ -1,15 +1,10 @@
-///File download from FlutterViz- Drag and drop a tools. For more details visit https://flutterviz.io/
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pelanggaran/Dashboard.dart';
 import 'package:pelanggaran/QRpage.dart/qrInput.dart';
-// import 'package:pelanggaran/pelanggaran/TambahPelanggaran.dart';
-// import 'package:pelanggaran/siswa/DetailSiswa%20(1).dart';
-// import 'package:pelanggaran/siswa/EditSiswa.dart';
-// import 'package:pelanggaran/siswa/TambahSiswa.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
